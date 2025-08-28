@@ -2,6 +2,8 @@
 
 This project creates an interactive dashboard using the Superstore dataset with Streamlit.
 
+**[Live Demo](https://superstore-app-dashboards.streamlit.app/)** 
+
 ## Features
 
 - Interactive filters by date range, category, and region
