@@ -1,10 +1,6 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
 import plotly.express as px
-import matplotlib.pyplot as plt
-import seaborn as sns
-from datetime import datetime
 import os
 
 # Set page title and configuration
@@ -39,22 +35,38 @@ st.markdown("---")
 # Load the dataset
 @st.cache_data
 def load_data():
-    # Check for file in current directory or parent directory
-    if os.path.exists('Sample - Superstore.csv'):
-        file_path = 'Sample - Superstore.csv'
-    elif os.path.exists('../Sample - Superstore.csv'):
-        file_path = '../Sample - Superstore.csv'
-    else:
-        st.error("Dataset file 'Sample - Superstore.csv' not found in current or parent directory.")
+    # Get the directory where the script is located
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    # Check for file in script directory first, then current working directory
+    possible_paths = [
+        os.path.join(script_dir, 'Sample - Superstore.csv'),
+        'Sample - Superstore.csv',
+        '../Sample - Superstore.csv'
+    ]
+    
+    file_path = None
+    for path in possible_paths:
+        if os.path.exists(path):
+            file_path = path
+            break
+    
+    if file_path is None:
+        st.error("Dataset file 'Sample - Superstore.csv' not found. Please ensure the CSV file is in the same directory as the app.")
+        st.info("Expected file locations checked: " + ", ".join(possible_paths))
         return pd.DataFrame()
         
-    df = pd.read_csv(file_path, encoding='latin-1')
-    # Convert date columns to datetime
-    df['Order Date'] = pd.to_datetime(df['Order Date'])
-    df['Ship Date'] = pd.to_datetime(df['Ship Date'])
-    # Calculate processing time in days
-    df['Processing Time'] = (df['Ship Date'] - df['Order Date']).dt.days
-    return df
+    try:
+        df = pd.read_csv(file_path, encoding='latin-1')
+        # Convert date columns to datetime
+        df['Order Date'] = pd.to_datetime(df['Order Date'])
+        df['Ship Date'] = pd.to_datetime(df['Ship Date'])
+        # Calculate processing time in days
+        df['Processing Time'] = (df['Ship Date'] - df['Order Date']).dt.days
+        return df
+    except Exception as e:
+        st.error(f"Error loading dataset: {str(e)}")
+        return pd.DataFrame()
 
 # Load the data
 df = load_data()
