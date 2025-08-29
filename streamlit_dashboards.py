@@ -3,13 +3,13 @@ import pandas as pd
 import plotly.express as px
 import os
 
-# Set page title and configuration
+# Page title and configuration
 st.set_page_config(
     page_title="Superstore Sales Dashboard",
     layout="wide"
 )
 
-# Apply custom CSS
+# Custom CSS
 st.markdown("""
 <style>
     .main-header {
@@ -35,10 +35,8 @@ st.markdown("---")
 # Load the dataset
 @st.cache_data
 def load_data():
-    # Get the directory where the script is located
     script_dir = os.path.dirname(os.path.abspath(__file__))
     
-    # Check for file in script directory first, then current working directory
     possible_paths = [
         os.path.join(script_dir, 'Sample - Superstore.csv'),
         'Sample - Superstore.csv',
